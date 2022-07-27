@@ -2,6 +2,10 @@
 
 namespace Rsa97\Zulip;
 
+use Rsa97\Zulip\Extensions\APIErrorException;
+use Rsa97\Zulip\Extensions\FileAccessErrorException;
+use Rsa97\Zulip\Extensions\TransportErrorException;
+
 use function PHPSTORM_META\map;
 
 class Client
@@ -51,11 +55,11 @@ class Client
         curl_setopt($curl, CURLOPT_URL, $url);
         $result = curl_exec($curl);
         if ($result === false) {
-            throw new \Exception(curl_error($curl), curl_errno($curl));
+            throw new TransportErrorException(curl_error($curl), curl_errno($curl));
         }
         $result = json_decode($result);
         if ($result->result === 'error') {
-            throw new \Exception($result->msg);
+            throw new APIErrorException($result->msg);
         }
         return $result;
     }
@@ -104,7 +108,7 @@ class Client
     public function uploadFile(string $path, string $fileName): string
     {
         if (!is_file($path) || !is_readable($path)) {
-            throw new \Exception("File '{$path}' is not accessible");
+            throw new FileAccessErrorException("File '{$path}' is not accessible");
         }
         $file = curl_file_create($path, mime_content_type($path), $fileName);
         $result = $this->postRequest('/api/v1/user_uploads', ['filename' => $file], jsonEncode: false);
@@ -642,7 +646,7 @@ class Client
     public function uploadCustomEmoji(string $path, string $name): void
     {
         if (!is_file($path) || !is_readable($path)) {
-            throw new \Exception("File '{$path}' is not accessible");
+            throw new FileAccessErrorException("File '{$path}' is not accessible");
         }
         $file = curl_file_create($path, mime_content_type($path));
         $name = urlencode($name);

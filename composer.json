@@ -1,12 +1,13 @@
 {
-  "name": "rsa97/zulip-php-client",
-  "description": "Zulip PHP Client",
+  "name": "rsa97/zulip-php-api-wrapper",
+  "description": "Zulip PHP API Wrapper",
+  "type": "library",
   "keywords": [
       "Rsa97",
-      "zulip-php-client"
+      "zulip-php-api-wrapper"
   ],
-  "homepage": "https://github.com/rsa97/zulip-php-client",
-  "license": "MIT",
+  "homepage": "https://github.com/Rsa97/Zulip-PHP-API-Wrapper",
+  "license": "GPL-3.0-only",
   "authors": [
       {
           "name": "Rsa97",
@@ -15,32 +16,17 @@
       }
   ],
   "require": {
-      "php": "^8.0"
-  },
-  "require-dev": {
-      "friendsofphp/php-cs-fixer": "^3.0",
-      "pestphp/pest": "^1.20",
-      "spatie/ray": "^1.28"
+      "php": "^8.1"
   },
   "autoload": {
       "psr-4": {
           "Rsa97\\Zulip\\": "src"
       }
   },
-  "autoload-dev": {
-      "psr-4": {
-          "Rsa97\\Zulip\\Tests\\": "tests"
-      }
-  },
-  "scripts": {
-      "test": "vendor/bin/pest",
-      "test-coverage": "vendor/bin/pest --coverage",
-      "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes"
-  },
   "config": {
       "sort-packages": true,
     "allow-plugins": {
-      "pestphp/pest-plugin": true
+      "pestphp/pest-plugin": false
     }
   },
   "minimum-stability": "dev",
