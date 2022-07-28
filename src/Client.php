@@ -2,9 +2,9 @@
 
 namespace Rsa97\Zulip;
 
-use Rsa97\Zulip\Extensions\APIErrorException;
-use Rsa97\Zulip\Extensions\FileAccessErrorException;
-use Rsa97\Zulip\Extensions\TransportErrorException;
+use Rsa97\Zulip\Exceptions\APIErrorException;
+use Rsa97\Zulip\Exceptions\FileAccessErrorException;
+use Rsa97\Zulip\Exceptions\TransportErrorException;
 
 use function PHPSTORM_META\map;
 
