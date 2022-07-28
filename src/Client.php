@@ -14,8 +14,13 @@ class Client
     private readonly string $botEmail;
     private readonly string $apiKey;
 
-    protected function request(RequestType $type, string $endpoint, array $data = [], bool $jsonEncode = true): object
-    {
+    protected function request(
+        RequestType $type,
+        string $endpoint,
+        array $data = [],
+        bool $jsonEncode = true,
+        bool $raw = false
+    ): object|string {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $type->value);
         curl_setopt($curl, CURLOPT_USERNAME, $this->botEmail);
@@ -30,7 +35,6 @@ class Client
                 }
             }
         }
-        var_dump($data);
         switch ($type) {
             case RequestType::GET:
                 if (count($data) > 0) {
@@ -56,6 +60,9 @@ class Client
         $result = curl_exec($curl);
         if ($result === false) {
             throw new TransportErrorException(curl_error($curl), curl_errno($curl));
+        }
+        if ($raw) {
+            return $result;
         }
         $result = json_decode($result);
         if ($result->result === 'error') {
@@ -113,6 +120,11 @@ class Client
         $file = curl_file_create($path, mime_content_type($path), $fileName);
         $result = $this->postRequest('/api/v1/user_uploads', ['filename' => $file], jsonEncode: false);
         return $result->uri;
+    }
+
+    public function getFile(string $url): string
+    {
+        return $this->request(RequestType::GET, $url, raw: true);
     }
 
     public function editMessage(Edit $edit): void
@@ -310,7 +322,6 @@ class Client
         foreach (StreamType::cases() as $type) {
             $options[$type->value] = in_array($type, $streamTypes);
         }
-        var_dump($options);
         $result = $this->getRequest('/api/v1/streams', $options);
         return array_map(
             fn($str) => Stream::from($str),
@@ -444,7 +455,6 @@ class Client
         if (isset($profileData)) {
             $data['profile_data'] = $profileData;
         }
-        var_dump(json_encode($data,JSON_UNESCAPED_UNICODE));
         $this->patchRequest("/api/v1/users/{$userId}", $data);
     }
 
@@ -656,7 +666,6 @@ class Client
     public function getProfileCustomFields(): array
     {
         $result = $this->getRequest('/api/v1/realm/profile_fields');
-        var_dump($result);
         return array_map(
             fn($e) => CustomField::from($e),
             $result->custom_fields
