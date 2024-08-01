@@ -4,6 +4,6 @@ namespace Rsa97\Zulip;
 
 enum WebhookTrigger: string
 {
-    case PRIVATE = 'private_message';
+    case PRIVATE = 'direct_message';
     case MENTION = 'mention';
 }
